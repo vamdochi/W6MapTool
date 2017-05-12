@@ -1,0 +1,4 @@
+sceneSetups:
+- path: Assets/MakeScene.unity
+  isLoaded: 0
+  isActive: 0
