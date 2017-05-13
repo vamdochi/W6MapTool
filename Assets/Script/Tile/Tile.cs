@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class Tile : MonoBehaviour {
 
-    private SpriteRenderer _spriteRenderer;
+    public SpriteRenderer SpriteRenderer { get; private set; }
 	// Use this for initialization
 	void Start () {
-        _spriteRenderer = GetComponent<SpriteRenderer>();
+        SpriteRenderer = GetComponent<SpriteRenderer>();
 	}
 	
 	// Update is called once per frame
@@ -15,5 +15,6 @@ public class Tile : MonoBehaviour {
 		
 	}
 
-    public void ChangeSprite( Sprite sprite) { _spriteRenderer.sprite = sprite; }
+    public Sprite GetSprite() { return SpriteRenderer.sprite; }
+    public void ChangeSprite( Sprite sprite) { SpriteRenderer.sprite = sprite; }
 }

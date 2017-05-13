@@ -27,11 +27,11 @@ public class CustomCamera : MonoBehaviour {
 
     private void UpdateCameraZoom()
     {
-        if(IsOnExpandCameraZoom() )
+        if(InputSystem.Instance.GetKeyCode(CustomKeyCode.CameraZoomIn))
         {
             _expandPer += _cameraZoomVelocity;
         }
-        else if(IsOnReduceCameraZoom())
+        else if(InputSystem.Instance.GetKeyCode(CustomKeyCode.CameraZoomOut))
         {
             _expandPer -= _cameraZoomVelocity;
             if (_expandPer < _minExpandPer)
@@ -42,16 +42,13 @@ public class CustomCamera : MonoBehaviour {
 
     private void UpdateCameraMove()
     {
-        if (IsOnCameraMove())
+        if (InputSystem.Instance.GetKeyCode(CustomKeyCode.CameraMove))
         {
-            Vector3 dist = (_prevMousePosition - Input.mousePosition) * _moveVelocity;
+            Vector3 dist = (_prevMousePosition - Input.mousePosition) * _moveVelocity / ( _expandPer * 0.01f );
             CameraMove(dist);
         }
         _prevMousePosition = Input.mousePosition;
     }
-    private bool IsOnCameraMove() { return Input.GetKey(KeyCode.Space) && Input.GetMouseButton(0); }
-    private bool IsOnReduceCameraZoom() { return Input.GetKey(KeyCode.Z) && Input.GetKey(KeyCode.LeftAlt) && Input.GetMouseButtonDown(0); }
-    private bool IsOnExpandCameraZoom() { return Input.GetKey(KeyCode.Z) && !Input.GetKey(KeyCode.LeftAlt) && Input.GetMouseButtonDown(0); }
 
     private void CameraMove( Vector3 dist)
     {
