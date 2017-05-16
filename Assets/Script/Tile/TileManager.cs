@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using UnityEngine.EventSystems;
 
 public class TileManager : MonoBehaviour {
 
@@ -27,12 +28,7 @@ public class TileManager : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        UpdateInput();
         UpdateOutLineTile();
-    }
-    private void UpdateInput()
-    {
-        
     }
 
     private void LoadTile()
@@ -75,7 +71,8 @@ public class TileManager : MonoBehaviour {
             position /= targetTiles.MaxCol * targetTiles.MaxRow;
             _outLineTile.transform.position = position;
 
-            if (InputSystem.Instance.GetKeyCode(CustomKeyCode.AllocateTile))
+            if (InputSystem.Instance.GetKeyCode(CustomKeyCode.AllocateTile) &&
+                !EventSystem.current.IsPointerOverGameObject())
             {
                 var history = new ChangedResourceHistory();
                 targetTiles.Foreach(
