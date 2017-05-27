@@ -4,6 +4,11 @@ using UnityEngine;
 using System;
 using UnityEngine.EventSystems;
 
+public enum BrushType
+{
+    Pencil,
+    Erase
+}
 public class TileManager : MonoBehaviour {
 
     public int Row;
@@ -12,13 +17,15 @@ public class TileManager : MonoBehaviour {
     public int BlockSize;
 
     private Tiles _tiles;
-    private GameObject _outLineTile;
+    private OutLineTile _outLineTile;
     private Sprite _sellectedSprite;
     private SellectTileSystem _sellectTileSystem;
     private HistoryManager _historyManager;
+    private BrushType _brushType;
 
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    void Start () {
+        
         _historyManager = GetComponent<HistoryManager>();
         _sellectedSprite = Resources.Load("Tile/base_tile/tail1_3", typeof( Sprite )) as Sprite;
         _sellectTileSystem = gameObject.AddComponent<SellectTileSystem>();
@@ -30,14 +37,21 @@ public class TileManager : MonoBehaviour {
 	void Update () {
         UpdateOutLineTile();
     }
+    public void ChangeSellectTile( Sprite sprite) { _sellectedSprite = sprite; }
+
+    public void ChangeBrushType( string typeName) {
+        object brushType = Enum.Parse(typeof(BrushType), typeName);
+
+        if( brushType != null)
+            _brushType = (BrushType)brushType;
+    }
 
     private void LoadTile()
     {
         const string tilePath = "Prefab/Tile/tile";
         const string outLineTilePath = "Prefab/Tile/testOutLine";
 
-        _outLineTile = Instantiate(Resources.Load( outLineTilePath )) as GameObject;
-        _outLineTile.SetActive(false);
+        _outLineTile = (Instantiate(Resources.Load( outLineTilePath )) as GameObject).GetComponent<OutLineTile>();
 
         _tiles = new Tiles(Row, Col, BlockSize);
         
@@ -57,32 +71,34 @@ public class TileManager : MonoBehaviour {
     private void UpdateOutLineTile()
     {
         var targetTiles = _sellectTileSystem.GetSellectedTiles(_tiles);
-        
-        if ( targetTiles.IsEmpty())
-            _outLineTile.SetActive(false);
+
+        if (targetTiles.IsEmpty())
+            _outLineTile.CoverTile(0, 0, Vector3.zero);
         else
         {
-            _outLineTile.SetActive(true);
-
-            _outLineTile.transform.localScale = new Vector3(targetTiles.MaxRow, targetTiles.MaxCol, 0);
-
-            Vector3 position = new Vector3( 0, 0, 0 );
+            Vector3 position = new Vector3(0, 0, 0);
             targetTiles.Foreach(t => position += t.transform.position);
             position /= targetTiles.MaxCol * targetTiles.MaxRow;
-            _outLineTile.transform.position = position;
+
+            _outLineTile.CoverTile(targetTiles.MaxRow, targetTiles.MaxCol, position);
 
             if (InputSystem.Instance.GetKeyCode(CustomKeyCode.AllocateTile) &&
                 !EventSystem.current.IsPointerOverGameObject())
             {
+
+                Sprite newSprite = _sellectedSprite;
+                if (_brushType == BrushType.Erase)
+                    newSprite = null;
+
                 var history = new ChangedResourceHistory();
                 targetTiles.Foreach(
-                    new Action<Tile>( (Tile t) =>
-                    {
-                        history.TargetRenderers.Add(t.SpriteRenderer);
-                        history.PrevSprites.Add(t.GetSprite());
-                        history.ChangedSprites.Add(_sellectedSprite);
-                        t.ChangeSprite(_sellectedSprite);
-                    }));
+                    new Action<Tile>((Tile t) =>
+                   {
+                       history.TargetRenderers.Add(t.SpriteRenderer);
+                       history.PrevSprites.Add(t.GetSprite());
+                       history.ChangedSprites.Add(newSprite);
+                       t.ChangeSprite(newSprite);
+                   }));
                 _historyManager.PushHistory(history);
             }
         }

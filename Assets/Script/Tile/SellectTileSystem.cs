@@ -26,6 +26,11 @@ public class SellectTileSystem : MonoBehaviour {
             _startDragPosition = position;
             _endDragPosition = position;
         }
+
+        //if( Input.GetKey(KeyCode.LeftControl))
+        //{
+        //    var _endDragPosition.x - _startDragPosition.x;
+        //}
     }
 
     public Tiles GetSellectedTiles( Tiles tiles)

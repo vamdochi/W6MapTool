@@ -79,11 +79,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Script\CustomCamera.cs" />
+    <Compile Include="Assets\Script\Directory\DirectoryManager.cs" />
+    <Compile Include="Assets\Script\Directory\FileEntity.cs" />
     <Compile Include="Assets\Script\Extension\Extesnion.cs" />
-    <Compile Include="Assets\Script\File\FileManager.cs" />
     <Compile Include="Assets\Script\InputSystem.cs" />
     <Compile Include="Assets\Script\Tile\History.cs" />
     <Compile Include="Assets\Script\Tile\HistoryManager.cs" />
+    <Compile Include="Assets\Script\Tile\OutLineTile.cs" />
     <Compile Include="Assets\Script\Tile\SellectTileSystem.cs" />
     <Compile Include="Assets\Script\Tile\Tile.cs" />
     <Compile Include="Assets\Script\Tile\TileManager.cs" />

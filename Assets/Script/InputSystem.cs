@@ -31,7 +31,6 @@ public class InputSystem : SingleTon<InputSystem> {
                 return Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.Z) && !Input.GetKey(KeyCode.LeftAlt);
             case CustomKeyCode.FrontRestoreHistory:
                 return Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.Z) && Input.GetKey(KeyCode.LeftAlt);
-
         }
         return false;
     }
