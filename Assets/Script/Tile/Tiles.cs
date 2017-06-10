@@ -5,6 +5,7 @@ using System;
 public class Tiles{
 
     public float BlockDistance { get; private set; }
+    public int BlockSize { get { return (int)(BlockDistance * 100); } }
     public int MaxRow { get; private set; }
     public int MaxCol { get; private set; }
     private Tile[] _tiles;
@@ -15,12 +16,11 @@ public class Tiles{
         MaxCol = col;
         BlockDistance = blockSize * 0.01f;
 
-
         _tiles = new Tile[row * col];
     }
     public bool IsEmpty() { return MaxRow <= 0 || MaxCol <= 0; }
-
-    public IEnumerable<Tile> GetEnumerable()
+    public int GetCount() { return MaxRow * MaxCol; }
+    public IEnumerator<Tile> GetEnumerator()
     {
         for(int y =0; y < MaxCol; ++y)
         {
@@ -30,10 +30,20 @@ public class Tiles{
             }
         }
     }
+    public List<Tile> ToList()
+    {
+        List<Tile> list = new List<Tile>();
+        for (int n =0; n < MaxCol * MaxRow; ++n)
+        {
+            list.Add(_tiles[n]);
+        }
+        return list;
+    }
     public void Foreach( Action<Tile> action)
     {
-        foreach (var tile in _tiles)
+        for (int n =0; n < MaxCol * MaxRow; ++n)
         {
+            var tile = _tiles[n];
             if (tile == null) continue;
             action(tile);
         }
@@ -48,9 +58,7 @@ public class Tiles{
             int endCol = (int)((endPosition.y + BlockDistance * 0.5f) / BlockDistance);
 
             if (startRow > endRow)
-            {
                 startRow.Swap(ref startRow, ref endRow);
-            }
             if (startCol > endCol)
                 startCol.Swap(ref startCol, ref endCol);
 
@@ -80,6 +88,7 @@ public class Tiles{
         }
         private set { }
     }
+    public Tile this[int index] {  get { return _tiles[index]; } }
     public Tile this[int row, int col]
     {
         get {

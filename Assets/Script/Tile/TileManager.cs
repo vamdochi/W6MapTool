@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using UnityEngine.EventSystems;
+using W6;
+using System.IO;
 
 public enum BrushType
 {
@@ -23,22 +25,22 @@ public class TileManager : MonoBehaviour {
     private HistoryManager _historyManager;
     private BrushType _brushType;
 
-    // Use this for initialization
-    void Start () {
-        
+    void Start()
+    {
         _historyManager = GetComponent<HistoryManager>();
-        _sellectedSprite = Resources.Load("Tile/base_tile/tail1_3", typeof( Sprite )) as Sprite;
         _sellectTileSystem = gameObject.AddComponent<SellectTileSystem>();
 
-        LoadTile();
+        InitalizeTiles();
     }
-	
-	// Update is called once per frame
-	void Update () {
+
+    void Update()
+    {
         UpdateOutLineTile();
     }
-    public void ChangeSellectTile( Sprite sprite) { _sellectedSprite = sprite; }
 
+    public byte[] GetTilesBinary() { return BinaryConverter.TilesToBinary(_tiles); }
+    public void LoadTiles(byte[] tilesBinary) { _tiles = BinaryConverter.BinaryToTiles(tilesBinary, _tiles); }
+    public void ChangeSellectTile( Sprite sprite) { _sellectedSprite = sprite; }
     public void ChangeBrushType( string typeName) {
         object brushType = Enum.Parse(typeof(BrushType), typeName);
 
@@ -46,7 +48,7 @@ public class TileManager : MonoBehaviour {
             _brushType = (BrushType)brushType;
     }
 
-    private void LoadTile()
+    private void InitalizeTiles()
     {
         const string tilePath = "Prefab/Tile/tile";
         const string outLineTilePath = "Prefab/Tile/testOutLine";

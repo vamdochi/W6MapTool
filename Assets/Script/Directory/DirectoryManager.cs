@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
-using UnityEngine.UI;
 
 // 네이밍도 바꿔 파일매니저가 뭐야 ㅡㅡ;
 // 지금 형태에 절대 안맞음. 리소스에 특화되어서 만들어져있어
@@ -12,7 +11,7 @@ using UnityEngine.UI;
 public class DirectoryManager : MonoBehaviour {
 
     private const string _rawImagePath = "Prefab/UI/FileView";
-    private const string _topDirectoryPath = "C:\\Users\\tpghk\\OneDrive\\Documents\\W6MapTool\\Resource";
+    private string _topDirectoryPath;
     private const int _iconfileSize = 25;
     private const int _iconExpandPer = 2;
     private const string _imageExtensionName = ".png";
@@ -24,6 +23,8 @@ public class DirectoryManager : MonoBehaviour {
     
 	// Use this for initialization
 	void Start () {
+        _topDirectoryPath = Path.GetDirectoryName(Application.dataPath) + "/Resource";
+        Debug.Log(_topDirectoryPath);
         _directoryBtnList = new List<GameObject>();
         _tileManager = GetComponent<TileManager>();
         LoadDirectory(_topDirectoryPath);
@@ -37,16 +38,12 @@ public class DirectoryManager : MonoBehaviour {
     public void OnMoveParentDirectory()
     {
         if( _currDirectoryPath != _topDirectoryPath)
-        {
             LoadDirectory(_currDirectoryPath.Substring(0, _currDirectoryPath.LastIndexOf('\\')) );
-        }
     }
     public void LoadDirectory(string directoryPath)
     {
         if (Directory.Exists(directoryPath))
-        {
             StartCoroutine("LoadAllFile", directoryPath);
-        }
     }
     // 이 함수 한번 다시 바꿔야할것 같소이다.
     // 지금 파일 형태 불러올려고 대충 짜놈 
@@ -92,8 +89,11 @@ public class DirectoryManager : MonoBehaviour {
             WWW www = new WWW("file://" + fileInfo.FullName);
             yield return www;
 
+            var sprite = Sprite.Create(www.texture, Rect.MinMaxRect(0, 0, www.texture.width, www.texture.height), new Vector2(0.5f, 0.5f));
+            SpriteManager.Instance.AddSprite(fileInfo.FullName, sprite);
+
             FileEntity fileEntity = CreateFileEntity( fileInfo);
-            fileEntity.ClickFileEventHanlder += () => { _tileManager.ChangeSellectTile(Sprite.Create(www.texture, Rect.MinMaxRect(0, 0, www.texture.width, www.texture.height), new Vector2(0.5f, 0.5f))); };
+            fileEntity.ClickFileEventHanlder += () => { _tileManager.ChangeSellectTile(sprite); };
             fileEntity.Initialize(fileInfo.Name, ImagesParent.transform, fileEntityPosition, www.texture);
             fileEntityPosition.y -= www.texture.height * ( _iconExpandPer + 1);
             _directoryBtnList.Add(fileEntity.gameObject);

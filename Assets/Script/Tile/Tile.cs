@@ -6,7 +6,7 @@ public class Tile : MonoBehaviour {
 
     public SpriteRenderer SpriteRenderer { get; private set; }
 	// Use this for initialization
-	void Start () {
+	void Awake () {
         SpriteRenderer = GetComponent<SpriteRenderer>();
 	}
 	
