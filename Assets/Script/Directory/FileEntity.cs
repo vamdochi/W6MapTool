@@ -31,6 +31,7 @@ public class FileEntity : MonoBehaviour {
         if( texture != null)
             _rawImage.texture = texture;
 
+        transform.localScale = Vector3.one;
         _button.onClick.AddListener(new UnityAction(()=> {
             ClickFileEventHanlder.Invoke();
             }));

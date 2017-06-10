@@ -39,7 +39,9 @@ namespace W6
             // Tile 바이너리 추출 및 헤더 추가
             for (int n = 0; n < tiles.GetCount(); ++n)
             {
-                string name = tiles[n].GetSprite().name;
+                string name = "defaultTile";
+                if (tiles[n] != null && tiles[n].GetSprite() != null)
+                    name = tiles[n].GetSprite().name;
                 IndexKey key;
                 if (!keyStroage.TryGetValue(name, out key))
                 {
@@ -136,8 +138,10 @@ namespace W6
                             }
                             targetTiles[x, y].transform.position =
                                 new Vector3(x * targetTiles.BlockDistance, y * targetTiles.BlockDistance, 0.0f);
-                            if ( fileName != "defaultTile")
+                            if (fileName != "defaultTile")
                                 targetTiles[x, y].ChangeSprite(SpriteManager.Instance.GetSprite(fileName));
+                            else
+                                targetTiles[x, y].ChangeSprite(null);
                         }
                     }
                 }

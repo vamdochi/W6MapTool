@@ -628,15 +628,16 @@ namespace SimpleFileBrowser
 			Success = false;
 			Result = null;
 
-			Hide();
-
 			if( onCancel != null )
 			{
 				onCancel();
 			}
-		}
 
-		public void OnPathChanged( string newPath )
+            Destroy(this.gameObject);
+
+        }
+
+        public void OnPathChanged( string newPath )
 		{
 			newPath = GetPathWithoutTrailingDirectorySeparator( newPath );
 			CurrentPath = newPath;

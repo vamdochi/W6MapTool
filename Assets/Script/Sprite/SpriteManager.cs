@@ -13,7 +13,10 @@ public class SpriteManager : SingleTon<SpriteManager> {
     {
         // 절대경로 제거
         sprite.name = fileName.Replace(@"\", "/").Replace(Path.GetDirectoryName(Application.dataPath) + "/Resource/", "");
-        _spriteStorage.Add(sprite.name, sprite);
+        if( !_spriteStorage.ContainsKey( sprite.name))
+        {
+            _spriteStorage.Add(sprite.name, sprite);
+        }
     }
 
     public Sprite GetSprite(string fileName)

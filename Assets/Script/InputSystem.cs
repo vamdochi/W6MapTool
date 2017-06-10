@@ -9,7 +9,9 @@ public enum CustomKeyCode
     CameraMove,
     AllocateTile,
     RestoreHistory,
-    FrontRestoreHistory
+    FrontRestoreHistory,
+    Save,
+    SaveAs
 }
 
 
@@ -31,6 +33,10 @@ public class InputSystem : SingleTon<InputSystem> {
                 return Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.Z) && !Input.GetKey(KeyCode.LeftAlt);
             case CustomKeyCode.FrontRestoreHistory:
                 return Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.Z) && Input.GetKey(KeyCode.LeftAlt);
+            case CustomKeyCode.Save:
+                return Input.GetKey(KeyCode.LeftControl) && !Input.GetKey(KeyCode.LeftShift) && Input.GetKeyDown(KeyCode.S);
+            case CustomKeyCode.SaveAs:
+                return Input.GetKey(KeyCode.LeftControl) && Input.GetKey(KeyCode.LeftShift) && Input.GetKeyDown(KeyCode.S);
         }
         return false;
     }

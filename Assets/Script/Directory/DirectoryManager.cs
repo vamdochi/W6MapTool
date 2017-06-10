@@ -23,8 +23,7 @@ public class DirectoryManager : MonoBehaviour {
     
 	// Use this for initialization
 	void Start () {
-        _topDirectoryPath = Path.GetDirectoryName(Application.dataPath) + "/Resource";
-        Debug.Log(_topDirectoryPath);
+        _topDirectoryPath = ( Path.GetDirectoryName(Application.dataPath) + "/Resource" ) .Replace('/', '\\');
         _directoryBtnList = new List<GameObject>();
         _tileManager = GetComponent<TileManager>();
         LoadDirectory(_topDirectoryPath);

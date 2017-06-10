@@ -20,40 +20,57 @@ public class FileManager : MonoBehaviour {
     {
         _tileManager = GetComponent<TileManager>();
     }
+    private void Update()
+    {
+        if( InputSystem.Instance.GetKeyCode(CustomKeyCode.Save))
+            Save();
+        else if (InputSystem.Instance.GetKeyCode(CustomKeyCode.SaveAs))
+            SaveAs();
+    }
     public void Save()
     {
         if (_w6mFile == null)
-        {
-            if (!CreateW6MFile(FILE_MODE.SAVE)) return;
-        }
-        _w6mFile.Save(_tileManager.GetTilesBinary());
+            FileOpen(FILE_MODE.SAVE);
+        else
+            _w6mFile.Save(_tileManager.GetTilesBinary());
     }
     public void SaveAs()
     {
-        if (!CreateW6MFile(FILE_MODE.SAVE)) return;
-        Save();
+        FileOpen(FILE_MODE.SAVE);
     }
     public void Load()
     {
-        if (!CreateW6MFile(FILE_MODE.LOAD)) return;
-        _tileManager.LoadTiles(_w6mFile.Load());
+        FileOpen(FILE_MODE.LOAD);
     }
-    private bool CreateW6MFile(FILE_MODE fileMode )
+    private bool FileOpen(FILE_MODE fileMode )
     {
-        string path = null;
         switch(fileMode)
         {
             case FILE_MODE.SAVE:
-                path = FileBrower.OpenSaveDialog();
+                FileBrower.OpenSaveDialog(( s ) => { CreateW6MFile(s, fileMode); });
                 break;
             case FILE_MODE.LOAD:
-                path = FileBrower.OpenLoadDialog();
+                FileBrower.OpenLoadDialog(( s ) => { CreateW6MFile(s, fileMode); });
                 break;
         }
-        if (path == null) return false;
-
-        _w6mFile = new W6MFile( path );
         return true;
+    }
+    private void CreateW6MFile( string path, FILE_MODE fileMode)
+    {
+        if (path != null)
+        {
+            _w6mFile = new W6MFile(path);
+
+            switch (fileMode)
+            {
+                case FILE_MODE.SAVE:
+                    _w6mFile.Save(_tileManager.GetTilesBinary());
+                    break;
+                case FILE_MODE.LOAD:
+                    _tileManager.LoadTiles(_w6mFile.Load());
+                    break;
+            }
+        }
     }
 }
 [Serializable]
@@ -86,32 +103,19 @@ public class W6MFile
 
 public class FileBrower
 {
-    public static string OpenSaveDialog()
+    public static void OpenSaveDialog(SimpleFileBrowser.FileBrowser.OnSuccess success)
     {
         SimpleFileBrowser.FileBrowser.SetFilters(true,
-            new SimpleFileBrowser.FileBrowser.Filter("Images", ".jpg", ".png"),
-            new SimpleFileBrowser.FileBrowser.Filter("Text Files", ".txt", ".pdf"));
-
-
-        SimpleFileBrowser.FileBrowser.SetDefaultFilter(".jpg");
-
-
-        SimpleFileBrowser.FileBrowser.SetExcludedExtensions(".lnk", ".tmp", ".zip", ".rar", ".exe");
-
-        SimpleFileBrowser.FileBrowser.AddQuickLink(null, "Users", "C:\\Users");
+            new SimpleFileBrowser.FileBrowser.Filter("w6m", ".w6m"));
+        SimpleFileBrowser.FileBrowser.SetDefaultFilter(".w6m");
+        SimpleFileBrowser.FileBrowser.ShowSaveDialog(success, null);
         
-        SimpleFileBrowser.FileBrowser.ShowSaveDialog( null, null, false, "C:\\", "Save", "Save" );
-        return null; ;
-        // Show a select folder dialog 
-        // onSuccess event: print the selected folder's path
-        // onCancel event: print "Canceled"
-        // Load file/folder: folder, Initial path: default (Documents), Title: "Select Folder", submit button text: "Select"
-        // FileBrowser.ShowLoadDialog( (path) => { Debug.Log( "Selected: " + path ); }, 
-        //                                () => { Debug.Log( "Canceled" ); }, 
-        //                                true, null, "Select Folder", "Select" );
     }
-    public static string OpenLoadDialog()
+    public static void OpenLoadDialog(SimpleFileBrowser.FileBrowser.OnSuccess success)
     {
-        return null;
+        SimpleFileBrowser.FileBrowser.SetFilters(true,
+            new SimpleFileBrowser.FileBrowser.Filter("w6m", ".w6m"));
+        SimpleFileBrowser.FileBrowser.SetDefaultFilter(".w6m");
+        SimpleFileBrowser.FileBrowser.ShowLoadDialog(success, null);
     }
 }
