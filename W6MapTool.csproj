@@ -98,6 +98,11 @@
     <Compile Include="Assets\Script\Tile\Tile.cs" />
     <Compile Include="Assets\Script\Tile\TileManager.cs" />
     <Compile Include="Assets\Script\Tile\Tiles.cs" />
+    <Compile Include="Assets\Script\UI\SwitchSystem.cs" />
+    <Compile Include="Assets\Script\UI\UIBaseAction.cs" />
+    <Compile Include="Assets\Script\UI\UIChangeResourceAction.cs" />
+    <Compile Include="Assets\Script\UI\UIMoveAction.cs" />
+    <Compile Include="Assets\Script\UI\UIRotateAction.cs" />
     <Compile Include="Assets\Script\Utility\Singleton.cs" />
     <Compile Include="Assets\Script\Utility\Static.cs" />
   </ItemGroup>

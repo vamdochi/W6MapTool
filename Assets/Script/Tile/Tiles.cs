@@ -52,15 +52,21 @@ public class Tiles{
     {
         get
         {
-            int startRow = (int)((startPosition.x + BlockDistance * 0.5f) / BlockDistance);
-            int startCol = (int)((startPosition.y + BlockDistance * 0.5f) / BlockDistance);
-            int endRow = (int)((endPosition.x + BlockDistance * 0.5f) / BlockDistance);
-            int endCol = (int)((endPosition.y + BlockDistance * 0.5f) / BlockDistance);
+            int startRow    = (int)((startPosition.x + BlockDistance * 0.5f) / BlockDistance);
+            int startCol    = (int)((startPosition.y + BlockDistance * 0.5f) / BlockDistance);
+            int endRow      = (int)((endPosition.x + BlockDistance * 0.5f) / BlockDistance);
+            int endCol      = (int)((endPosition.y + BlockDistance * 0.5f) / BlockDistance);
 
             if (startRow > endRow)
                 startRow.Swap(ref startRow, ref endRow);
             if (startCol > endCol)
                 startCol.Swap(ref startCol, ref endCol);
+
+            startRow = Math.Min(Math.Max(0, startRow), MaxRow - 1);
+            startCol = Math.Min(Math.Max(0, startCol), MaxCol - 1);
+            endRow = Math.Min(Math.Max(0, endRow), MaxRow - 1);
+            endCol = Math.Min(Math.Max(0, endCol), MaxCol - 1);
+
 
             Tiles tiles = new Tiles( endRow - startRow + 1, endCol - startCol + 1, 0);
 
@@ -92,17 +98,10 @@ public class Tiles{
     public Tile this[int row, int col]
     {
         get {
-            if( row < 0 || row >= MaxRow ||
-                col < 0 || col >= MaxCol)
-                return null;
                 return _tiles[col * MaxRow + row];
         }
         set
         {
-            if (row < 0 || row >= MaxRow ||
-                col < 0 || col >= MaxCol)
-                return;
-
             _tiles[col * MaxRow + row] = value;
         }
     }
